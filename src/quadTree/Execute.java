@@ -19,6 +19,7 @@ public class Execute {
     
     public static ArrayList<Sensor> setOfSensors;
     
+    public static String absoluteDirectory = new File(".").getAbsolutePath();
     public static File file = new File("D:/DataStructure/javaFile/output/Probability_Covered_Node.png");
     public static Graphics2D g2 = myImage.createGraphics();
     

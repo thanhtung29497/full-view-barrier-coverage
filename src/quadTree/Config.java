@@ -11,6 +11,6 @@ public class Config{
 	public static final double OMEGA = 60;
 	public static final double FIX_OMEGA = 65;
 	public static final int K = 3;
-	public static File FILE = new File("D:/HUST/SoICT/workspace/QuadTreeKW/data/input_data_2500.txt");
-	public static File IMAGE_OUT = new File("D:/HUST/SoICT/workspace/QuadTreeKW/data/image_out_fill_2500.png");
+	public static File FILE = new File(new File(".").getAbsolutePath() + "/data/input_data_2500.txt");
+	public static File IMAGE_OUT = new File(new File(".").getAbsolutePath() + "/data/image_out_fill_2500.png");
 }
