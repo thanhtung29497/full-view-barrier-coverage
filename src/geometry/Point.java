@@ -1,4 +1,4 @@
-package maths;
+package geometry;
 
 public class Point {
 	private Double x;
@@ -28,5 +28,11 @@ public class Point {
 	
 	public Boolean equals(Point other) {
 		return this.x.equals(other.getX()) && this.y.equals(other.getY());
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "(" + this.x + ", " + this.y + ")";
 	}
 }

@@ -1,4 +1,4 @@
-package maths;
+package geometry;
 
 public class Line {
 	
@@ -12,7 +12,7 @@ public class Line {
 	public Line(Point p1, Point p2) {
 		this.givenPoint = p1;
 		this.direction = new Vector(p1.getX() - p2.getX(), p1.getY() - p2.getY());
-		this.normal = Intersections.getPerpendicularVector(this.direction);
+		this.normal = Vector.getPerpendicularVector(this.direction);
 	}
 	
 	public Vector getNormalVector() {

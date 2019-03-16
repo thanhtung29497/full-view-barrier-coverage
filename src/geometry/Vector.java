@@ -1,4 +1,4 @@
-package maths;
+package geometry;
 
 public class Vector {
 	private Double x;
@@ -34,6 +34,18 @@ public class Vector {
 	
 	public Point getDestination() {
 		return this.destination;
+	}
+	
+	public static Vector getPerpendicularVector(Vector v) {
+		return new Vector(v.getY(), -v.getX());
+	}
+	
+	public static Double dot(Vector v1, Vector v2) {
+		return v1.getX() * v2.getX() + v1.getY() * v2.getY();
+	}
+	
+	public static Double cross(Vector v1, Vector v2) {
+		return v1.getX() * v2.getY() - v1.getY() * v2.getX();
 	}
 	
 }

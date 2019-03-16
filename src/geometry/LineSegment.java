@@ -1,4 +1,4 @@
-package maths;
+package geometry;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ public class LineSegment {
 	}
 	
 	public Double getLength() {
-		return Intersections.calEuclideanDistance(this.getFirstEndpoint(), this.getSecondEndpoint());
+		return Utils.calEuclideanDistance(this.getFirstEndpoint(), this.getSecondEndpoint());
 	}
 	
 	public Point getMidPoint() {
@@ -45,15 +45,15 @@ public class LineSegment {
 		Vector AB = new Vector(A, B);
 		Vector AC = new Vector(A, C);
 		
-		Double crossProduct = Intersections.cross(AB, AC);
-		if (!crossProduct.equals(0.0)) {
+		Double crossProduct = Vector.cross(AB, AC);
+		if (Math.abs(crossProduct) > 1e-10) {
 			return false;
 		}
 		
 		// --> A, B, C are aligned	
 		
-		Double ABdotAC = Intersections.dot(AB, AC);
-		Double ABdotAB = Intersections.dot(AB, AB);
+		Double ABdotAC = Vector.dot(AB, AC);
+		Double ABdotAB = Vector.dot(AB, AB);
 		return 0 <= ABdotAC && ABdotAC <= ABdotAB;
 
 	}

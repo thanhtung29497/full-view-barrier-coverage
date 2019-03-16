@@ -1,4 +1,4 @@
-package maths;
+package geometry;
 
 public class Circle {
 	private Point centre;
