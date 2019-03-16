@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import sensor.Config;
+
 public class Quadtree {
 	
 	private TreeNode root;
@@ -23,6 +25,12 @@ public class Quadtree {
 	
 	public void setNodeChecking(INodeChecking nodeChecking) {
 		this.nodeChecking = nodeChecking;
+	}
+	
+	public List<TreeNode> bfs(List<TreeNode> nodes) {
+		Double source = this.root.getUpperleft().getX();
+		Double destination = this.root.getUpperleft().getX() + this.root.getSizeX();
+		return new ArrayList<>();
 	}
 	
 	public List<TreeNode> run() {

@@ -7,13 +7,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import geometry.Circle;
 import geometry.CircularSector;
 import geometry.Point;
 import quadtree.Quadtree;
@@ -52,7 +50,10 @@ public class Execute {
 		quadtree.setNodeChecking(new FullViewChecking(setOfSensors, Config.THETA));
 		
 		List<TreeNode> fullViewRegions = quadtree.run();
+		List<TreeNode> fullViewPaths = quadtree.bfs(fullViewRegions);
+		
 		draw(fullViewRegions,setOfSensors);
+		
 		long runtime = new Date().getTime() - start.getTime();
 		for (TreeNode region: fullViewRegions) {
 			System.out.println(region.getCenter() + " " + region.getSizeX() + "x" + region.getSizeY());
