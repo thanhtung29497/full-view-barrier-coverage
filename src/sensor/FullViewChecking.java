@@ -138,6 +138,7 @@ public class FullViewChecking implements INodeChecking {
 		for (Polygon subregion: subregions) {
 			Point centroid = subregion.getCentroid();
 			List<Point> circularList = this.sortSensorsCounterClockwise(centroid, coveredList);
+			if(circularList.size()<Math.PI/Config.THETA) return false;
 			if (!this.checkIfFullViewCovered(subregion, circularList)) {
 				return false;
 			}

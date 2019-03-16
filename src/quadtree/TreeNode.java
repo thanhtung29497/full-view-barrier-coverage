@@ -25,10 +25,10 @@ public class TreeNode {
 	public List<TreeNode> divide() {
 		Double newSizeX = sizeX / 2;
 		Double newSizeY = sizeY / 2;
-		TreeNode upperleftChild = new TreeNode(centerX - newSizeX, centerY + newSizeY, newSizeX, newSizeY, level + 1);
-		TreeNode upperrightChild = new TreeNode(centerX + newSizeX, centerY + newSizeY, newSizeX, newSizeY, level + 1);
-		TreeNode lowerleftChild = new TreeNode(centerX - newSizeX, centerY - newSizeY, newSizeX, newSizeY, level + 1);
-		TreeNode lowerrightChild = new TreeNode(centerX + newSizeX, centerY - newSizeY, newSizeX, newSizeY, level + 1);
+		TreeNode upperleftChild = new TreeNode(centerX - newSizeX/2, centerY + newSizeY/2, newSizeX, newSizeY, level + 1);
+		TreeNode upperrightChild = new TreeNode(centerX + newSizeX/2, centerY + newSizeY/2, newSizeX, newSizeY, level + 1);
+		TreeNode lowerleftChild = new TreeNode(centerX - newSizeX/2, centerY - newSizeY/2, newSizeX, newSizeY, level + 1);
+		TreeNode lowerrightChild = new TreeNode(centerX + newSizeX/2, centerY - newSizeY/2, newSizeX, newSizeY, level + 1);
 		return Arrays.asList(upperleftChild, upperrightChild, lowerleftChild, lowerrightChild);
 	}
 	

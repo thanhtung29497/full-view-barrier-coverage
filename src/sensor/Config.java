@@ -3,8 +3,8 @@ package sensor;
 import java.io.File;
 
 public class Config {
-	public static final Double ROI_LENGTH = 500.0;
-	public static final Double ROI_WIDTH = 500.0;
+	public static final Double ROI_LENGTH = 300.0;
+	public static final Double ROI_WIDTH = 300.0;
 	public static final Double SENSOR_RADIUS = 25.0;
 	public static final Integer NUMBER_SENSOR = 2000;
 	public static final Double SENSOR_ANGLE = Math.PI / 4;
@@ -14,8 +14,8 @@ public class Config {
 	public static final Integer K = 3;
 	public static final String INPUT_DIRECTORY = new File(".").getAbsolutePath() + "/data/comparison/";
 	public static final String OUTPUT_DIRECTORY = new File(".").getAbsolutePath() + "/output/";
-	public static final String UNIFORM = "normal";
-	public static final String GAUSS = "gauss"; 
+	public static final String UNIFORM = "uniform";
+	public static final String GAUSS = "normal"; 
 	
 	public static File formatInputFile(Integer number, Integer roiLength, Integer roiWidth, String distribution) {
 		String fileName = distribution + roiWidth.intValue() + "_" + roiLength.intValue() + "_" + number + ".txt";
