@@ -1,8 +1,5 @@
 package geometry;
 
-import quadTree.Config;
-import quadTree.Tools;
-
 public class CircularSector implements IShape {
 	private Point centre;
 	private Double radius;
@@ -36,10 +33,7 @@ public class CircularSector implements IShape {
 	public Boolean contain(Point p) {
 		Double distanceFromCenter = Utils.calEuclideanDistance(p, this.centre);
 		Vector pointToCenter = new Vector(this.centre, p);
-		Double angleToCenter = Math.atan2(pointToCenter.getY(), pointToCenter.getX());
-		if (angleToCenter.compareTo(0.0) < 0) {
-			angleToCenter += Math.PI * 2;
-		}
+		Double angleToCenter = pointToCenter.getAngleToXAxis();
 		
 		Double angleOfTwoVectors = Math.abs(this.direction - angleToCenter);
 		if (angleOfTwoVectors.compareTo(Math.PI) > 0) {

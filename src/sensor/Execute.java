@@ -36,7 +36,7 @@ public class Execute {
         	graph.draw(new Rectangle2D.Double((centre.getX()+30)*2, (centre.getY()+30)*2, 1.0, 1.0));
         }
         try {
-            ImageIO.write(myImage, "png", new File("congdeptraivaidai2.png"));
+            ImageIO.write(myImage, "png", new File("visualization.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,6 +44,7 @@ public class Execute {
 	public static void main(String argv[]) {
 		Date start = new Date();
 		File inputFile = Config.formatInputFile(Config.NUMBER_SENSOR, Config.ROI_WIDTH.intValue(), Config.ROI_LENGTH.intValue(), Config.UNIFORM);
+		//inputFile = new File(Config.INPUT_DIRECTORY + "test.txt");
 		List<Sensor> setOfSensors = Sensor.readUniformSensorsFromFile(inputFile, Config.SENSOR_ANGLE, Config.SENSOR_RADIUS);
 		
 		Quadtree quadtree = new Quadtree(Config.ROI_LENGTH / 2.0, Config.ROI_WIDTH / 2, Config.ROI_LENGTH, Config.ROI_WIDTH);
@@ -52,7 +53,7 @@ public class Execute {
 		List<TreeNode> fullViewRegions = quadtree.run();
 		List<TreeNode> fullViewPaths = quadtree.bfs(fullViewRegions);
 		
-		draw(fullViewRegions,setOfSensors);
+		Execute.draw(fullViewRegions,setOfSensors);
 		
 		long runtime = new Date().getTime() - start.getTime();
 		for (TreeNode region: fullViewRegions) {
