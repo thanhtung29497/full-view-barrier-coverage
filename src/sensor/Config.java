@@ -16,7 +16,7 @@ public class Config {
 	public static final String OUTPUT_DIRECTORY = new File(".").getAbsolutePath() + "/output/";
 	public static final String UNIFORM = "uniform";
 	public static final String GAUSS = "normal"; 
-	
+	public static final Integer NUMBER_THREAD = 4;
 	public static File formatInputFile(Integer number, Integer roiLength, Integer roiWidth, String distribution) {
 		String fileName = distribution + roiWidth.intValue() + "_" + roiLength.intValue() + "_" + number + ".txt";
 		return new File(Config.INPUT_DIRECTORY + fileName);

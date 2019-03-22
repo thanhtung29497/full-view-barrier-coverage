@@ -6,6 +6,95 @@ import java.util.List;
 
 import sensor.Config;
 
+class Execute implements Runnable{
+	static List<TreeNode> satisfiedNodes;
+	static List<TreeNode> pendingNodes;
+	static int nThreadRun = 0;
+	private INodeChecking nodeChecking;
+	private Integer threshold;
+	public boolean inProces;
+	TreeNode currentNode;
+	
+	public Execute() {
+		inProces = false;
+	} 
+	
+	public static synchronized TreeNode getNode(Execute thread) {
+		TreeNode currentNode= null;
+		if(!pendingNodes.isEmpty()){
+			currentNode = pendingNodes.remove(0);
+			if(!thread.inProces) {
+				thread.inProces = true;
+				nThreadRun++;
+			}
+		}else {
+			if(thread.inProces) {
+				thread.inProces = false;
+				nThreadRun --;
+			}
+		}
+		return currentNode;
+	}
+
+	public void setThresdHold(int trh) {
+		this.threshold = trh;
+	}
+	public void setNodeChecking(INodeChecking nodeChecking) {
+		this.nodeChecking = nodeChecking;
+	}
+	
+	public void setSatisfiedNodes(List<TreeNode> satisf) {
+		this.satisfiedNodes = satisf;
+	}
+	public void setPendingNodes(List<TreeNode> list) {
+		this.pendingNodes = list;
+	}
+	
+	
+	public void run() {
+		
+		if (this.nodeChecking == null) {
+			return;
+		}
+		
+		while ((this.currentNode=Execute.getNode(this))!=null || (nThreadRun!=0)) {
+			if(!inProces) {
+				try {
+					Thread.currentThread().sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else {
+				if (!this.nodeChecking.check(this.currentNode)) {
+					if (currentNode.getLevel() > this.threshold) {
+						continue;
+					}
+					List<TreeNode> subnodes = currentNode.divide();
+					Execute.addPending(subnodes);
+				} else {
+					Execute.addSatif(currentNode);
+				}
+			}
+		}
+		System.out.println("A Thread is stopped");
+		System.out.println(""+nThreadRun);
+		return;
+	}
+
+	private static synchronized void addPending(List<TreeNode> subnodes) {
+		// TODO Auto-generated method stub
+		Execute.pendingNodes.addAll(subnodes);
+	}
+
+	private static synchronized void addSatif(TreeNode currentNode) {
+		// TODO Auto-generated method stub
+		Execute.satisfiedNodes.add(currentNode);
+	}
+	
+}
+
 public class Quadtree {
 	
 	private TreeNode root;
@@ -31,6 +120,35 @@ public class Quadtree {
 		Double source = this.root.getUpperleft().getX();
 		Double destination = this.root.getUpperleft().getX() + this.root.getSizeX();
 		return new ArrayList<>();
+	}
+	
+	public List<TreeNode> runParallel() {
+		List<TreeNode> satisfiedNodes = new ArrayList<>();
+		List<TreeNode> pendingNodes = new ArrayList<>(Arrays.asList(root));
+		
+		Execute thread[] = new Execute[Config.NUMBER_THREAD];
+		Thread[] thrObj = new Thread[Config.NUMBER_THREAD];
+		
+		Execute.satisfiedNodes = satisfiedNodes;
+		Execute.pendingNodes = pendingNodes;
+		
+		for(int i = 0 ; i<Config.NUMBER_THREAD;i++) {
+			System.out.println("Thread["+i+"] is Creating...");
+			thread[i] = new Execute();
+			thread[i].setNodeChecking(this.nodeChecking);
+			thread[i].setThresdHold(threshold);
+			System.out.println("Thread["+i+"] is Starting...");
+			thrObj[i] = new Thread(thread[i]);
+			thrObj[i].start();
+		}
+		for(int i=0;i<Config.NUMBER_THREAD;i++)
+			try {
+				thrObj[i].join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return satisfiedNodes;
 	}
 	
 	public List<TreeNode> run() {

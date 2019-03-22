@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Intersections {
 	
-	public static Comparator<Vector> counterClockwiseOrder = new Comparator<>() {
+	public static Comparator<Vector> counterClockwiseOrder = new Comparator<Vector>() {
 		@Override
 		public int compare(Vector v1, Vector v2) {
 			return v1.getAngleToXAxis() - v2.getAngleToXAxis() > 1e-10 ? 1 : -1;
