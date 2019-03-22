@@ -66,7 +66,7 @@ public class Execute {
 		System.out.println("Number of regions: " + fullViewRegions.size());
 		System.out.println("Runtime: " + runtime + "ms");
 		
-		//start paralell
+		//start paralell code
 		System.out.println("Start Paralell");
 		start = new Date();
 		fullViewRegions = quadtree.runParallel();
