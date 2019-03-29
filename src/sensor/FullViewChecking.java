@@ -1,6 +1,5 @@
 package sensor;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +14,6 @@ import geometry.LineSegment;
 import geometry.Locus;
 import geometry.Point;
 import geometry.Polygon;
-import geometry.Utils;
 import geometry.Vector;
 import quadtree.INodeChecking;
 import quadtree.TreeNode;
@@ -30,23 +28,7 @@ public class FullViewChecking implements INodeChecking {
 		this.fullViewAngle = angle;
 	}
 	
-	private List<Point> getCoveredList(Polygon region) {
-		List<Point> coveredList = new ArrayList<>();
-		for (Sensor sensor: this.setOfSensors) {
-			Boolean isCovered = true;
-			for (Point vertex: region.getVertices()) {
-				if (!sensor.cover(vertex)) {
-					isCovered = false;
-				}
-			}
-			
-			if (isCovered) {
-				coveredList.add(((CircularSector)sensor.getShape()).getCentre());
-			}
-		}
-		
-		return coveredList;
-	}
+	
 	
 	private List<Polygon> divideRegionByCoveredList(Polygon region, List<Point> circularList) {
 		List<Polygon> subregions = new ArrayList<>();
@@ -76,19 +58,7 @@ public class FullViewChecking implements INodeChecking {
 		return subregions;
 	}
 
-	private List<Point> sortSensorsCounterClockwise(Point center, List<Point> setOfSensors) {
-		List<Vector> vectors = new ArrayList<>();
-		for (Point point: setOfSensors) {
-			vectors.add(new Vector(center, point));
-		}
-		
-		vectors.sort(Intersections.counterClockwiseOrder);
-
-		List<Point> sortedPointSet = vectors.stream().map(vector -> vector.getDestination())
-			.collect(Collectors.toList());
-		
-		return sortedPointSet;
-	}
+	
 	
 	private Boolean checkIfRegionInsideCircularList(Polygon subregion, List<Point> circularList) {
 		Point centroid = subregion.getCentroid();
@@ -98,10 +68,7 @@ public class FullViewChecking implements INodeChecking {
 			Point p2 = circularList.get((index + 1) % circularList.size());
 			Vector v1 = new Vector(centroid, p1);
 			Vector v2 = new Vector(centroid, p2);
-			Double angleOfTwoVectors = v2.getAngleToXAxis() - v1.getAngleToXAxis();
-			if (angleOfTwoVectors < 1e-10) {
-				angleOfTwoVectors += Math.PI * 2;
-			}
+			Double angleOfTwoVectors = Vector.getAngleOfTwoVectors(v1, v2);
 			if (angleOfTwoVectors - Math.PI > 1e-10) {
 				return false;
 			}
@@ -129,7 +96,7 @@ public class FullViewChecking implements INodeChecking {
 					}
 				}
 				
-				if (Utils.calEuclideanDistance(unsafeCircle.getCentre(), centroid).compareTo(unsafeCircle.getRadius()) <= 0) {
+				if (geometry.Utils.calEuclideanDistance(unsafeCircle.getCentre(), centroid).compareTo(unsafeCircle.getRadius()) <= 0) {
 					isFullViewCovered = false;
 					break;
 				}
@@ -147,7 +114,7 @@ public class FullViewChecking implements INodeChecking {
 		}
 		
 		AxisParallelRectangle region = new AxisParallelRectangle(node.getUpperleft(), node.getSizeX(), node.getSizeY());
-		List<Point> coveredList = this.getCoveredList(region);
+		List<Point> coveredList = Utils.getCoveredList(region, this.setOfSensors);
 		if (coveredList.isEmpty()) {
 			return false;
 		}
@@ -156,9 +123,9 @@ public class FullViewChecking implements INodeChecking {
 		
 		for (Polygon subregion: subregions) {
 			Point centroid = subregion.getCentroid();
-			List<Point> circularList = this.sortSensorsCounterClockwise(centroid, coveredList);
+			List<Point> circularList = Utils.sortSensorsCounterClockwise(centroid, coveredList);
 			
-			//if(circularList.size()<Math.PI/Config.THETA) return false;
+			if(circularList.size()<Math.PI/Config.THETA) return false;
 			
 			if (!this.checkIfRegionInsideCircularList(subregion, circularList)
 					|| !this.checkIfInSafeZone(subregion, circularList)) {
@@ -182,7 +149,7 @@ public class FullViewChecking implements INodeChecking {
 		Point I = new Point(2.0, -2.0);
 		Polygon region = new Polygon(Arrays.asList(A, D, B, C));
 		TreeNode node = new TreeNode(region.getCentroid().getX(), region.getCentroid().getY(),
-				Utils.calEuclideanDistance(A, D), Utils.calEuclideanDistance(A, C), 0);
+				geometry.Utils.calEuclideanDistance(A, D), geometry.Utils.calEuclideanDistance(A, C), 0);
 		List<Sensor> sensors = Arrays.asList(E, F, G, I).stream().map(point -> {
 			return new Sensor(new CircularSector(point, Config.SENSOR_RADIUS, Math.PI * 2, Math.PI * 3 / 2));
 		}).collect(Collectors.toList());

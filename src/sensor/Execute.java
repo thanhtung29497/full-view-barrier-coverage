@@ -44,11 +44,12 @@ public class Execute {
 	public static void main(String argv[]) {
 		Date start = new Date();
 		File inputFile = Config.formatInputFile(Config.NUMBER_SENSOR, Config.ROI_WIDTH.intValue(), Config.ROI_LENGTH.intValue(), Config.UNIFORM);
-		//inputFile = new File(Config.INPUT_DIRECTORY + "test.txt");
+		inputFile = new File(Config.INPUT_DIRECTORY + "input_data_1000.txt");
 		List<Sensor> setOfSensors = Sensor.readUniformSensorsFromFile(inputFile, Config.SENSOR_ANGLE, Config.SENSOR_RADIUS);
 		
 		Quadtree quadtree = new Quadtree(Config.ROI_LENGTH / 2.0, Config.ROI_WIDTH / 2, Config.ROI_LENGTH, Config.ROI_WIDTH);
-		quadtree.setNodeChecking(new FullViewChecking(setOfSensors, Config.THETA));
+		//quadtree.setNodeChecking(new FullViewChecking(setOfSensors, Config.THETA));
+		quadtree.setNodeChecking(new KOmegaChecking(setOfSensors, Config.K, Config.OMEGA));
 		
 		List<TreeNode> fullViewRegions = quadtree.run();
 		List<TreeNode> fullViewPaths = quadtree.bfs(fullViewRegions);

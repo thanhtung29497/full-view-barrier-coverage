@@ -6,13 +6,6 @@ import java.util.List;
 
 public class Intersections {
 	
-	public static Comparator<Vector> counterClockwiseOrder = new Comparator<>() {
-		@Override
-		public int compare(Vector v1, Vector v2) {
-			return v1.getAngleToXAxis() - v2.getAngleToXAxis() > 1e-10 ? 1 : -1;
-		}
-	};
-	
 	public static List<Point> find(Line line, LineSegment segment) {
 		ArrayList<Point> intersections = new ArrayList<>();
 		

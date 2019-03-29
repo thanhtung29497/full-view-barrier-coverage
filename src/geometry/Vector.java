@@ -1,5 +1,7 @@
 package geometry;
 
+import java.util.Comparator;
+
 public class Vector {
 	private Double x;
 	private Double y;
@@ -44,15 +46,20 @@ public class Vector {
 		return angle;
 	}
 	
-	public static Double getRadianAngleOfTwoVectors(Vector v1, Vector v2) {
-		Double angle1 = v1.getAngleToXAxis();
-		Double angle2 = v2.getAngleToXAxis();
-		Double angle = Math.abs(angle1 - angle2);
-		if (angle.compareTo(Math.PI) > 0) {
-			return Math.PI * 2 - angle;
+	public static Double getAngleOfTwoVectors(Vector v1, Vector v2) {
+		Double angle = v2.getAngleToXAxis() - v1.getAngleToXAxis();
+		if (angle < 1e-10) {
+			angle += Math.PI * 2;
 		}
 		return angle;
 	}
+	
+	public static Comparator<Vector> counterClockwiseOrder = new Comparator<>() {
+		@Override
+		public int compare(Vector v1, Vector v2) {
+			return v1.getAngleToXAxis() - v2.getAngleToXAxis() > 1e-10 ? 1 : -1;
+		}
+	};
 	
 	public static Vector getPerpendicularVector(Vector v) {
 		return new Vector(v.getY(), -v.getX());

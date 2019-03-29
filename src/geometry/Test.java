@@ -118,7 +118,7 @@ public class Test {
 			for (Point point: pointSet) {
 				vectors.add(new Vector(centroid, point));
 			}
-			vectors.sort(Intersections.counterClockwiseOrder);
+			vectors.sort(Vector.counterClockwiseOrder);
 			List<Point> sortedPointSet = vectors.stream().map(vector -> vector.getDestination())
 				.collect(Collectors.toList());
 			

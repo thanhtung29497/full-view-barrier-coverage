@@ -3,10 +3,10 @@ package sensor;
 import java.io.File;
 
 public class Config {
-	public static final Double ROI_LENGTH = 300.0;
-	public static final Double ROI_WIDTH = 300.0;
-	public static final Double SENSOR_RADIUS = 25.0;
-	public static final Integer NUMBER_SENSOR = 2000;
+	public static final Double ROI_LENGTH = 2000.0;
+	public static final Double ROI_WIDTH = 500.0;
+	public static final Double SENSOR_RADIUS = 400.0;
+	public static final Integer NUMBER_SENSOR = 1000;
 	public static final Double SENSOR_ANGLE = Math.PI / 4;
 	public static final Double OMEGA = Math.PI / 3;
 	public static final Double THETA = Math.PI / 3;
