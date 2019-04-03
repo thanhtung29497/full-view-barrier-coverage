@@ -3,6 +3,7 @@ package sensor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import geometry.Point;
 import geometry.Polygon;
@@ -13,7 +14,7 @@ public class KOmegaCoverage {
 	private Integer k;
 	private Double omega;
 	private List<Point> coveredList;
-	private List<Point> openSet;
+	private List<Integer> openSet;
 	private Point chosenPoint;
 	private List<Point> circularList;
 	private Polygon region;
@@ -24,6 +25,74 @@ public class KOmegaCoverage {
 		this.omega = omega;
 		this.coveredList = coveredList;
 	}
+	
+	public boolean backtrackOnePoint(int openSetId, int closeSetId){
+		
+		for (int index = closeSetId + 1; index < this.circularList.size(); ++index) {
+			
+			Point currentPoint = this.circularList.get(index);
+			Vector v1 = new Vector(this.chosenPoint, this.circularList.get(this.openSet.get(openSetId - 1)));
+			Vector v2 = new Vector(this.chosenPoint, currentPoint);
+			
+			if (Vector.getAngleOfTwoVectors(v1, v2) - this.omega > -1e-10) {
+				this.openSet.add(index);
+				
+				if (openSetId == this.k - 1) {
+					return true;
+				} else if (this.backtrackOnePoint(openSetId + 1, index)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private void shiftOpensetOneIndex() {
+		for (int index = 0; index < this.openSet.size(); ++ index) {
+			Integer openSetId = this.openSet.get(index);
+			
+			this.openSet.set(index, (openSetId + 1) % this.circularList.size());
+		}
+	}
+	
+	public Boolean checkBasicGroup(Polygon region) {
+        
+		this.chosenPoint = region.getVertices().get(0);
+		this.circularList = Utils.sortSensorsCounterClockwise(this.chosenPoint, this.coveredList);
+		this.openSet = new ArrayList<>();
+		this.openSet.add(0);
+		
+		this.backtrackOnePoint(1, 0);
+		
+		List<Point> basicGroup = this.openSet.stream().map(index -> this.circularList.get(index)).collect(Collectors.toList());
+
+        if (basicGroup.size() < this.k) {
+        	
+            Boolean kOmegaCovered = true;
+            do {
+            	for (Point vertex: region.getVertices()) {
+            		if (!this.checkPoint(vertex, basicGroup)) {
+            			kOmegaCovered = false;
+            			break;
+            		}
+            	}
+                
+            	if (kOmegaCovered) {
+            		return true;
+            	}
+            	
+            	if (this.openSet.get(this.openSet.size() - 1) != this.circularList.size() - 1) {
+            		this.shiftOpensetOneIndex();
+            	} else {
+            		break;
+            	}
+                
+            } while (true);
+        }
+        
+        return false;
+	}
+
 	
 	public Boolean checkPoint(Point givenPoint, List<Point> kPoints) {
 		List<Point> sortedPoint = Utils.sortSensorsCounterClockwise(givenPoint, kPoints);
@@ -43,15 +112,19 @@ public class KOmegaCoverage {
 	}
 	
 	public Boolean checkRegion(Polygon region) {
-		this.chosenPoint = region.getCentroid();
-		this.region = region;
-		this.circularList = Utils.sortSensorsCounterClockwise(this.chosenPoint, this.coveredList);
 		
+		if (coveredList.isEmpty()) {
+        	return false;
+        }
+		
+		this.chosenPoint = region.getVertices().get(0);
+		this.circularList = Utils.sortSensorsCounterClockwise(this.chosenPoint, this.coveredList);
+		this.region = region;
 		this.isKOmegaCovered = false;
 		
 		for (int index = 0; index < this.circularList.size(); ++index) {
 			this.openSet = new ArrayList<>();
-			this.openSet.add(this.circularList.get(index));
+			this.openSet.add(index);
 			this.backtrack(1, index);
 			if (this.isKOmegaCovered) {
 				return true;
@@ -69,17 +142,23 @@ public class KOmegaCoverage {
 		for (int index = closeSetId + 1; index < this.circularList.size() && !this.isKOmegaCovered; ++index) {
 			
 			Point currentPoint = this.circularList.get(index);
-			Vector v1 = new Vector(this.chosenPoint, this.openSet.get(openSetId - 1));
+			Vector v1 = new Vector(this.chosenPoint, this.circularList.get(this.openSet.get(openSetId - 1)));
 			Vector v2 = new Vector(this.chosenPoint, currentPoint);
+			Vector v0 = new Vector(this.chosenPoint, this.circularList.get(this.openSet.get(0)));
 			
-			if (Vector.getAngleOfTwoVectors(v1, v2) - this.omega > -1e-10) {
-				this.openSet.add(currentPoint);
+			if (Vector.getAngleOfTwoVectors(v1, v2) - this.omega > 0 &&
+					(Math.PI * 2 - Vector.getAngleOfTwoVectors(v0, v2) / (this.k - openSetId) > this.omega)) {
+				this.openSet.add(index);
 				
 				if (openSetId == this.k - 1) {
 					
 					Boolean found = true;
+					List<Point> candidateGroup = this.openSet.stream()
+							.map(id -> this.circularList.get(id))
+							.collect(Collectors.toList());
+					
 					for (Point vertex: this.region.getVertices()) {
-						if (!this.checkPoint(vertex, openSet)) {
+						if (!this.checkPoint(vertex, candidateGroup)) {
 							found = false;
 							break;
 						}
@@ -101,8 +180,8 @@ public class KOmegaCoverage {
 	}
 	
 	public void printOpenSet() {
-		for (Point point: this.openSet) {
-			System.out.println(point);
+		for (Integer index: this.openSet) {
+			System.out.println(this.circularList.get(index));
 		}
 	}
 	

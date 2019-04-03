@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import geometry.Point;
-import quadTree.Node;
 
 public class TreeNode {
 	
@@ -50,6 +49,18 @@ public class TreeNode {
 	
 	public Point getUpperleft() {
 		return new Point(centerX - sizeX / 2, centerY + sizeY / 2);
+	}
+	
+	public Point getUpperright() {
+		return new Point(centerX + sizeX / 2, centerY + sizeY / 2);
+	}
+	
+	public Point getLowerleft() {
+		return new Point(centerX - sizeX / 2, centerY - sizeY / 2);
+	}
+	
+	public Point getLowerright() {
+		return new Point(centerX + sizeX / 2, centerY - sizeY / 2);
 	}
 	
 }

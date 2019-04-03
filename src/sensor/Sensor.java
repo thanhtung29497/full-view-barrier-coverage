@@ -8,7 +8,6 @@ import java.util.Scanner;
 import geometry.CircularSector;
 import geometry.IShape;
 import geometry.Point;
-import quadTree.Config;
 
 public class Sensor {
 	
@@ -19,7 +18,7 @@ public class Sensor {
 		try{
 			Scanner sc = new Scanner(file);
 			while (sc.hasNextDouble()) {
-				Double direction = sc.nextDouble();
+				Double direction = sc.nextDouble() / 180 * Math.PI;
 				Double x = sc.nextDouble();
 				Double y = sc.nextDouble();
 				CircularSector shape = new CircularSector(new Point(x, y), radius, angle, direction);

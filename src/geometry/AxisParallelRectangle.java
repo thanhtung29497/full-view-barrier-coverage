@@ -25,4 +25,20 @@ public class AxisParallelRectangle extends Polygon {
 	public Double getWidth() {
 		return this.width;
 	}
+	
+	public Point getUpperleft() {
+		return this.vertices.get(0);
+	}
+	
+	public Point getUpperright() {
+		return this.vertices.get(1);
+	}
+	
+	public Point getLowerleft() {
+		return this.vertices.get(3);
+	}
+	
+	public Point getLowerright() {
+		return this.vertices.get(2);
+	}
 }

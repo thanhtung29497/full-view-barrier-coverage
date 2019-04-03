@@ -135,7 +135,7 @@ public class ExecuteVer2 {
             	// drawOutput
             	g2.fill(new Rectangle2D.Double(x - sizeX, y - sizeY, sizeX * 2, sizeY * 2));
             } 
-            else if (node.getRank() < 7) {
+            else if (node.getRank() <= 7) {
                 node.split();
                 for (int i = 0; i < 4; i++) {
                     queue.add(node.getChildren()[i]);
